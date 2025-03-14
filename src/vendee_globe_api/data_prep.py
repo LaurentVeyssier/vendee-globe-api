@@ -1,6 +1,7 @@
 import pandas as pd
 import constants as c
 from utils import data_prep_web
+import numpy as np
 from typing import Tuple
 
 def load_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -114,6 +115,8 @@ if __name__ == "__main__":
     df_race, df_infos = split_data(df)
     df_race, df_infos = clean_and_rename(df_race, df_infos)
     df_infos = merge_duplicate_columns(df_infos)
+    df_infos= df_infos.map(lambda x: None if pd.isna(x) else x)
+    df_infos.replace([np.inf, -np.inf], np.nan).isna().sum()
     df_race = add_batch_column(df_race)
 
     df_race.to_parquet(c.df_race_path, engine="pyarrow", index=False)
