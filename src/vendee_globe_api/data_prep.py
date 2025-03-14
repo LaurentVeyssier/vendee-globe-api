@@ -2,7 +2,6 @@ import pandas as pd
 import constants as c
 from utils import data_prep_web
 from typing import Tuple
-import ace_tools as tools
 
 def load_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
@@ -117,5 +116,5 @@ if __name__ == "__main__":
     df_infos = merge_duplicate_columns(df_infos)
     df_race = add_batch_column(df_race)
 
-    tools.display_dataframe_to_user(name="Race Data", dataframe=df_race)
-    tools.display_dataframe_to_user(name="Infos Data", dataframe=df_infos)
+    df_race.to_parquet(c.df_race_path, engine="pyarrow", index=False)
+    df_infos.to_parquet(c.df_infos_path, engine="pyarrow", index=False)

@@ -1,25 +1,47 @@
 from fastapi import FastAPI
+from fastapi_utils.tasks import repeat_every
 import pandas as pd
-import asyncio
 import constants as c
-
-df = pd.read_parquet(c.race_2024_path)
+from datetime import timedelta
 
 app = FastAPI()
 
-current_time = df["heure"].min()
-time_step = pd.Timedelta(minutes=2) 
+# Charger les datasets
+df_infos = pd.read_parquet(c.df_infos_path)
+df_race = pd.read_parquet(c.df_race_path)
+
+# Index du batch actuel
+current_batch_index = 0
+batch_interval = timedelta(minutes=2)
+
+@app.get("/infos")
+def get_infos():
+    """
+    Endpoint pour récupérer les informations statiques sur les skippers et les bateaux.
+    """
+    return df_infos.to_dict(orient="records")
 
 @app.get("/race")
-def get_next_batch():
-    global current_time
+def get_race():
+    """
+    Endpoint pour récupérer tous les batches de données dynamiques jusqu'au batch actuel.
+    """
+    global current_batch_index
     
-    # Filtrer les données du batch actuel
-    batch = df[df["heure"] == current_time]
+    # Sélectionner les batchs jusqu'à l'index actuel
+    unique_batches = df_race["batch"].unique()
+    if current_batch_index >= len(unique_batches):
+        return {"message": "Fin des données disponibles"}
     
-    # Avancer au prochain batch simulé
-    next_time = current_time + time_step
-    if next_time in df["heure"].values:
-        current_time = next_time
+    batch_values = unique_batches[:current_batch_index + 1]
+    batch_data = df_race[df_race["batch"].isin(batch_values)]
     
-    return batch.to_dict(orient="records")
+    return batch_data.to_dict(orient="records")
+
+@repeat_every(seconds=120) 
+async def batch_updater():
+    """
+    Tâche asynchrone pour mettre à jour les batches toutes les 2 minutes.
+    """
+    global current_batch_index
+    current_batch_index += 1
