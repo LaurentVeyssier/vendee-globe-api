@@ -6,14 +6,20 @@ readme = "README.md"
 authors = [
     { name = "Jeanne", email = "jeanne.wwork@gmail.com" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.11",
+    "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.5",
+    "pandas-profiling>=3.6.6",
     "pandas>=2.2.3",
     "plotly>=6.0.0",
     "pyarrow>=19.0.1",
+    "setuptools>=76.0.0",
     "typing>=3.10.0.0",
     "uvicorn>=0.34.0",
+    "ydata-profiling>=4.14.0",
+    "ace-tools>=0.0",
 ]
 
 [build-system]
