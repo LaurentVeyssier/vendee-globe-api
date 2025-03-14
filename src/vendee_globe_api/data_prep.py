@@ -94,6 +94,30 @@ def merge_duplicate_columns(df_infos: pd.DataFrame) -> pd.DataFrame:
     df_infos.drop_duplicates(inplace=True)
     return df_infos
 
+def clean_df_infos(df_infos: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean df_infos by replacing NaN values, handling infinities, and ensuring JSON compatibility.
+
+    Args:
+        df_infos (pd.DataFrame): Info dataset.
+
+    Returns:
+        pd.DataFrame: Cleaned dataset.
+    """
+    df_infos.replace([np.inf, -np.inf], None, inplace=True)
+
+    for col in df_infos.select_dtypes(include=[np.float64]).columns:
+        df_infos[col] = df_infos[col].astype(str)
+
+    columns_to_fix = ["Anciens noms du bateau", "Chantier", "Date de lancement", "Ancien nom du bateau"]
+    for col in columns_to_fix:
+        if col in df_infos.columns:
+            df_infos[col] = df_infos[col].astype(str).replace("nan", "N/A")
+
+    df_infos = df_infos.where(pd.notna(df_infos), None)
+
+    return df_infos
+
 def add_batch_column(df_race: pd.DataFrame) -> pd.DataFrame:
     """
     Add a batch column based on the date column.
@@ -115,9 +139,7 @@ if __name__ == "__main__":
     df_race, df_infos = split_data(df)
     df_race, df_infos = clean_and_rename(df_race, df_infos)
     df_infos = merge_duplicate_columns(df_infos)
-    df_infos= df_infos.map(lambda x: None if pd.isna(x) else x)
-    df_infos.replace([np.inf, -np.inf], np.nan).isna().sum()
+    df_infos = clean_df_infos(df_infos)
     df_race = add_batch_column(df_race)
-
     df_race.to_parquet(c.df_race_path, engine="pyarrow", index=False)
     df_infos.to_parquet(c.df_infos_path, engine="pyarrow", index=False)
