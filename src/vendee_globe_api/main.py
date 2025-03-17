@@ -11,6 +11,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenue sur l'API Vendée Globe"}
+
 try:
     # Load datasets
     logger.info("Loading datasets...")

@@ -33,22 +33,28 @@ def merge_datasets(df_race: pd.DataFrame, df_web: pd.DataFrame, df_wiki: pd.Data
     df = pd.merge(df, df_wiki, on="skipper", how="left")
     return df
 
+
 def split_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Split the dataset into dynamic race data and static info data.
+    La colonne "skipper" est conservée dans les deux DataFrames pour permettre une jointure ultérieure.
 
     Args:
         df (pd.DataFrame): The merged dataset.
 
     Returns:
-        Tuple[pd.DataFrame, pd.DataFrame]: Separated race and info datasets.
+        Tuple[pd.DataFrame, pd.DataFrame]: Separated race (dynamic) and info (static) datasets.
     """
     dynamic_cols = [
         "rang", "heure", "latitude", "longitude", "cap_30min", "vitesse_30min", "VMG_30min", "distance_30min",
         "cap_last", "vitesse_last", "VMG_last", "distance_last", "cap_24h", "vitesse_24h", "VMG_24h", "distance_24h",
         "DTF", "DTL", "date"
     ]
+    
+    
     static_cols = [col for col in df.columns if col not in dynamic_cols]
+    dynamic_cols.append("skipper")
+    
     return df[dynamic_cols].copy(), df[static_cols].copy()
 
 def clean_and_rename(df_race: pd.DataFrame, df_infos: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
