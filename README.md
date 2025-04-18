@@ -4,10 +4,10 @@
 This project is designed to track race progress, update batch data dynamically, and serve static boat/skipper details.
 
 ## 🚀 Features
-- **Race Tracking**: Get dynamic race data with batch updates every 2 minutes.
+- **Race Tracking**: Get dynamic race data with batch updates every 5 seconds.
 - **Skipper & Boat Information**: Retrieve static information about participants and their boats.
 - **Optimized Performance**: Pre-cleaned datasets for efficient querying.
-- **Automated Batch Update**: Background task increments batch index every 2 minutes.
+- **Automated Batch Update**: Background task increments batch index every 5seconds.
 
 ---
 
@@ -21,16 +21,15 @@ cd vendee-globe-api
 
 ### **2. Create and activate a virtual environment with UV**
 
-run : 
-`curl -LsSf https://astral.sh/uv/install.sh | sh`
-
-then run :   `uv sync`
-
-finaly : `source .venv/bin/activate`
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+source .venv/bin/activate
+```
 
 ### **3. Start the API**
 ```bash
-cd src/vendee-globe-api
+cd src/vendee-globe-api/
 uvicorn main:app --reload
 ```
 
