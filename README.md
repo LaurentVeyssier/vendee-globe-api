@@ -39,7 +39,7 @@ source .venv/bin/activate
 
 ### **3. Start the API**
 ```bash
-cd src/vendee-globe-api/
+cd src/vendee_globe_api/
 uvicorn main:app --reload
 ```
 
