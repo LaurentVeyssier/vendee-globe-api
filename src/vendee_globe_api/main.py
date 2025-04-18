@@ -37,9 +37,6 @@ try:
 except Exception as e:
     logger.error(f"Error loading datasets: {e}", exc_info=True) # Handle loading errors
 
-# Batch index tracking
-current_batch_index = 0
-
 @app.get("/infos") # Endpoint to get skipper and boat information
 def get_infos():
     """
@@ -58,22 +55,21 @@ def get_race():
     """
     Returns all race data batches up to the current batch index.
     """
-    global current_batch_index
     try:
-        logger.info(f"Request received on /race (current_batch_index={current_batch_index})")
+        logger.info(f"Request received on /race (current_batch_index={app.state.current_batch_index})")
 
         unique_batches = df_race["batch"].unique() # Get unique batch values
         total_batches = len(unique_batches) # Get the total number of batches
         logger.info(f"Total available batches: {total_batches}")
 
-        if current_batch_index >= total_batches: # Check if the current batch index exceeds the total number of batches
+        if app.state.current_batch_index >= total_batches: # Check if the current batch index exceeds the total number of batches
             logger.warning("Attempted to access data beyond available batches.")
             return {"message": "No more available data."}
 
-        batch_values = unique_batches[:current_batch_index + 1] # Get batch values up to the current index
+        batch_values = unique_batches[:app.state.current_batch_index + 1] # Get batch values up to the current index
         batch_data = df_race[df_race["batch"].isin(batch_values)] # Filter the DataFrame to include only the selected batches
 
-        logger.info(f"Returning data up to batch {current_batch_index}")
+        logger.info(f"Returning data up to batch {app.state.current_batch_index}")
         return batch_data.to_dict(orient="records")
 
     except Exception as e:
@@ -82,18 +78,17 @@ def get_race():
 
 async def batch_scheduler():
     """
-    Updates the batch index every 2 minutes.
+    Updates the batch index every 5 seconds.
     """
-    global current_batch_index
     unique_batches = df_race["batch"].unique() # Get unique batch values
     total_batches = len(unique_batches) # Get the total number of batches
 
     while True:
         await asyncio.sleep(5) # Sleep for 5 seconds 
         try:
-            if current_batch_index < total_batches - 1: # Check if the current batch index is less than the total number of batches
-                current_batch_index += 1 # Increment the batch index
-                logger.info(f"Batch index updated: {current_batch_index}")
+            if app.state.current_batch_index <= total_batches - 1: # Check if the current batch index is less than the total number of batches
+                app.state.current_batch_index += 1 # Increment the batch index
+                logger.info(f"Batch index updated: {app.state.current_batch_index}")
             else:
                 logger.warning("Batch index update attempted beyond available data.")
         except Exception as e:
@@ -102,4 +97,5 @@ async def batch_scheduler():
 @app.on_event("startup") # Event triggered when the application starts
 async def startup_event(): # async function to run on startup
     logger.info("Starting batch scheduler...")
+    app.state.current_batch_index = 0 # Initialize the batch index
     asyncio.create_task(batch_scheduler()) # Start the batch scheduler in the background
