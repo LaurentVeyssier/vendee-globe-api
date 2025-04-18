@@ -21,11 +21,21 @@ cd vendee-globe-api
 
 ### **2. Create and activate a virtual environment with UV**
 
+### **Navigate to the Project Directory**
+
+Before executing the following commands, ensure you are in the project directory and have checked out the correct branch:
+
+```bash
+git checkout <branch-name>
+``` 
+Replace `<branch-name>` with the branch you want to work on.
+
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 source .venv/bin/activate
 ```
+
 
 ### **3. Start the API**
 ```bash
