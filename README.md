@@ -29,25 +29,32 @@ then run :   `uv sync`
 finaly : `source .venv/bin/activate`
 
 ### **3. Start the API**
-
-`uvicorn main:app --reload`
+```bash
+cd src/vendee-globe-api
+uvicorn main:app --reload
+```
 
 ## Example Request 
+### **Write and Test Requests in Another Terminal**
 
-GET /infos : Returns static information about skippers and boats.
+To test the API endpoints, open a new terminal window while keeping the server running. Use the following examples to make requests:
+
+#### Example 1: Fetch Static Information
+GET /infos : Retrieve details about skippers and boats:
 ```bash
 curl -X GET http://127.0.0.1:8000/infos
 ```
 
-GET /race : Returns all race data batches up to the current batch index.
+#### Example 2: Fetch Race Data
+GET /race : Retrieve all race data batches up to the current batch index:
 ```bash
 curl -X GET http://127.0.0.1:8000/race
 ```
 
-The race data batches update automatically every 2 minutes.
+The race data batches update automatically every 5 seconds.
 
 	•	The batch index starts at 0.
-	•	Every 120 seconds, a background task increments the current batch index.
+	•	Every 5 seconds, a background task increments the current batch index.
 	•	New data becomes available in /race endpoint as batches progress.
 
 
