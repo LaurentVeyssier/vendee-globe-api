@@ -41,7 +41,6 @@ except Exception as e:
 def get_infos():
     """
     Returns all skipper and boat information with the latest data.
-     
     """
     try:
         logger.info("Request received on /infos")

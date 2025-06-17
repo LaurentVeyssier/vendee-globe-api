@@ -3,15 +3,15 @@
 **Vendée Globe API** is a FastAPI-based RESTful API that provides race data and information about skippers and boats.  
 This project is designed to track race progress, update batch data dynamically, and serve static boat/skipper details.
 
-## 🚀 Features
+## Features
 - **Race Tracking**: Get dynamic race data with batch updates every 5 seconds.
 - **Skipper & Boat Information**: Retrieve static information about participants and their boats.
 - **Optimized Performance**: Pre-cleaned datasets for efficient querying.
-- **Automated Batch Update**: Background task increments batch index every 5seconds.
+- **Automated Batch Update**: Background task increments batch index every 5 seconds.
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### **1. Clone the repository**
 ```bash
@@ -35,7 +35,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 source .venv/bin/activate
 ```
-
 
 ### **3. Start the API**
 ```bash
@@ -62,8 +61,12 @@ curl -X GET http://127.0.0.1:8000/race
 
 The race data batches update automatically every 5 seconds.
 
-	•	The batch index starts at 0.
-	•	Every 5 seconds, a background task increments the current batch index.
-	•	New data becomes available in /race endpoint as batches progress.
+<ul class="nocopy" style="list-style: disc; padding-left: 20px;">
+  <li>Le compteur de batch commence à 0.</li>
+  <li>Toutes les 5 secondes, une tâche en arrière-plan incrémente l’index courant.</li>
+  <li>De nouvelles données deviennent accessibles sur l’endpoint <code>/race</code> à mesure que les batchs avancent.</li>
+</ul>
 
+## Code Explanation
 
+For detailed information and explanations about the codebase, please refer to the [`explanations_code.md`](explanations_code.md) file. This document provides insights into the project structure, main modules, and key implementation details to help you understand and contribute to the Vendée Globe API.
