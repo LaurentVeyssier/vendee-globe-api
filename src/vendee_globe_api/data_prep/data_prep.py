@@ -1,8 +1,11 @@
-import pandas as pd
-import constants as c
-from utils import data_prep_web
-import numpy as np
 from typing import Tuple
+
+import numpy as np
+import pandas as pd
+
+import vendee_globe_api.constants as c
+from vendee_globe_api.utils import data_prep_web
+
 
 def load_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
@@ -17,7 +20,9 @@ def load_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     return df_race, df_web, df_wiki
 
 
-def merge_datasets(df_race: pd.DataFrame, df_web: pd.DataFrame, df_wiki: pd.DataFrame) -> pd.DataFrame:
+def merge_datasets(
+    df_race: pd.DataFrame, df_web: pd.DataFrame, df_wiki: pd.DataFrame
+) -> pd.DataFrame:
     """
     Merge race, web, and wiki datasets on the skipper column.
 
@@ -46,18 +51,36 @@ def split_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         Tuple[pd.DataFrame, pd.DataFrame]: Separated race (dynamic) and info (static) datasets.
     """
     dynamic_cols = [
-        "rang", "heure", "latitude", "longitude", "cap_30min", "vitesse_30min", "VMG_30min", "distance_30min",
-        "cap_last", "vitesse_last", "VMG_last", "distance_last", "cap_24h", "vitesse_24h", "VMG_24h", "distance_24h",
-        "DTF", "DTL", "date"
+        "rang",
+        "heure",
+        "latitude",
+        "longitude",
+        "cap_30min",
+        "vitesse_30min",
+        "VMG_30min",
+        "distance_30min",
+        "cap_last",
+        "vitesse_last",
+        "VMG_last",
+        "distance_last",
+        "cap_24h",
+        "vitesse_24h",
+        "VMG_24h",
+        "distance_24h",
+        "DTF",
+        "DTL",
+        "date",
     ]
-    
-    
+
     static_cols = [col for col in df.columns if col not in dynamic_cols]
     dynamic_cols.append("skipper")
-    
+
     return df[dynamic_cols].copy(), df[static_cols].copy()
 
-def clean_and_rename(df_race: pd.DataFrame, df_infos: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+
+def clean_and_rename(
+    df_race: pd.DataFrame, df_infos: pd.DataFrame
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Rename columns and clean the datasets.
 
@@ -69,15 +92,30 @@ def clean_and_rename(df_race: pd.DataFrame, df_infos: pd.DataFrame) -> Tuple[pd.
         Tuple[pd.DataFrame, pd.DataFrame]: Cleaned and renamed race and info datasets.
     """
     rename_dict = {
-        "rang": "rank", "heure": "time", "latitude": "latitude", "longitude": "longitude",
-        "cap_30min": "heading_30min", "vitesse_30min": "speed_30min", "VMG_30min": "vmg_30min", "distance_30min": "distance_30min",
-        "cap_last": "heading_last", "vitesse_last": "speed_last", "VMG_last": "vmg_last", "distance_last": "distance_last",
-        "cap_24h": "heading_24h", "vitesse_24h": "speed_24h", "VMG_24h": "vmg_24h", "distance_24h": "distance_24h",
-        "DTF": "distance_to_finish", "DTL": "distance_to_leader", "date": "date"
+        "rang": "rank",
+        "heure": "time",
+        "latitude": "latitude",
+        "longitude": "longitude",
+        "cap_30min": "heading_30min",
+        "vitesse_30min": "speed_30min",
+        "VMG_30min": "vmg_30min",
+        "distance_30min": "distance_30min",
+        "cap_last": "heading_last",
+        "vitesse_last": "speed_last",
+        "VMG_last": "vmg_last",
+        "distance_last": "distance_last",
+        "cap_24h": "heading_24h",
+        "vitesse_24h": "speed_24h",
+        "VMG_24h": "vmg_24h",
+        "distance_24h": "distance_24h",
+        "DTF": "distance_to_finish",
+        "DTL": "distance_to_leader",
+        "date": "date",
     }
     df_race.rename(columns=rename_dict, inplace=True)
     df_infos.rename(columns=rename_dict, inplace=True)
     return df_race, df_infos
+
 
 def merge_duplicate_columns(df_infos: pd.DataFrame) -> pd.DataFrame:
     """
@@ -89,16 +127,17 @@ def merge_duplicate_columns(df_infos: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Cleaned dataset.
     """
-    cols_x = [col for col in df_infos.columns if col.endswith('_x')]
+    cols_x = [col for col in df_infos.columns if col.endswith("_x")]
     for col in cols_x:
-        col_y = col.replace('_x', '_y')
+        col_y = col.replace("_x", "_y")
         if col_y in df_infos.columns:
             df_infos[col] = df_infos[col].combine_first(df_infos[col_y])
             df_infos.drop(columns=[col_y], inplace=True)
-        df_infos.rename(columns={col: col.replace('_x', '')}, inplace=True)
+        df_infos.rename(columns={col: col.replace("_x", "")}, inplace=True)
     df_infos.columns = [col.replace("_y", "") for col in df_infos.columns]
     df_infos.drop_duplicates(inplace=True)
     return df_infos
+
 
 def clean_df_infos(df_infos: pd.DataFrame) -> pd.DataFrame:
     """
@@ -115,7 +154,12 @@ def clean_df_infos(df_infos: pd.DataFrame) -> pd.DataFrame:
     for col in df_infos.select_dtypes(include=[np.float64]).columns:
         df_infos[col] = df_infos[col].astype(str)
 
-    columns_to_fix = ["Anciens noms du bateau", "Chantier", "Date de lancement", "Ancien nom du bateau"]
+    columns_to_fix = [
+        "Anciens noms du bateau",
+        "Chantier",
+        "Date de lancement",
+        "Ancien nom du bateau",
+    ]
     for col in columns_to_fix:
         if col in df_infos.columns:
             df_infos[col] = df_infos[col].astype(str).replace("nan", "N/A")
@@ -123,6 +167,7 @@ def clean_df_infos(df_infos: pd.DataFrame) -> pd.DataFrame:
     df_infos = df_infos.where(pd.notna(df_infos), None)
 
     return df_infos
+
 
 def add_batch_column(df_race: pd.DataFrame) -> pd.DataFrame:
     """
@@ -138,9 +183,12 @@ def add_batch_column(df_race: pd.DataFrame) -> pd.DataFrame:
     df_race["batch"] = df_race["date"].ne(df_race["date"].shift()).cumsum() - 1
     return df_race
 
+
 if __name__ == "__main__":
     df_race, df_web, df_wiki = load_data()
-    df_web = data_prep_web(df_web, skipper_corrections=[('Kojiro Shiraishi', 'Kōjirō Shiraishi')])
+    df_web = data_prep_web(
+        df_web, skipper_corrections=[("Kojiro Shiraishi", "Kōjirō Shiraishi")]
+    )
     df = merge_datasets(df_race, df_web, df_wiki)
     df_race, df_infos = split_data(df)
     df_race, df_infos = clean_and_rename(df_race, df_infos)
