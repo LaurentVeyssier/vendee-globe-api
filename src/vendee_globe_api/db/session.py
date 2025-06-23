@@ -10,8 +10,8 @@ SessionLocal = sessionmaker(bind=engine, class_=Session, autoflush=False)
 
 
 def get_db() -> Generator[Session, None, None]:
-    trips_db = SessionLocal()
+    db = SessionLocal()
     try:
-        yield trips_db
+        yield db
     finally:
-        trips_db.close()
+        db.close()

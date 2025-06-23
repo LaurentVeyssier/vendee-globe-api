@@ -6,7 +6,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class TripBase(Base):
+class BoatBase(Base):
     __tablename__ = "boats"
 
     nat_voile = Column(String, primary_key=True, nullable=False)
@@ -28,7 +28,7 @@ class TripBase(Base):
     year = Column(Integer, nullable=False)
 
 
-class HistoryBase(Base):
+class RaceBase(Base):
     __tablename__ = "race"
 
     id = Column(Integer, primary_key=True, index=True)
