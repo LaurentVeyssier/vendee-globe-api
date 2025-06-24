@@ -11,7 +11,7 @@ class BoatBase(Base):
 
     nat_voile = Column(String, primary_key=True, nullable=False)
     skipper = Column(String, nullable=False)
-    boat = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     color = Column(String, nullable=False)
     skipper_first_name = Column(String, nullable=False)
     skipper_last_name = Column(String, nullable=False)
