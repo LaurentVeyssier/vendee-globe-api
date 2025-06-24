@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase
 
 
@@ -32,7 +32,7 @@ class RaceBase(Base):
     id = Column(Integer, primary_key=True, index=True)
     rank = Column(Integer, nullable=False)
     nat_voile = Column(String, ForeignKey("boats.nat_voile"), nullable=False)
-    date_time = Column(String, nullable=False)
+    date_time = Column(DateTime, nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     heading_30min = Column(Float, nullable=False)

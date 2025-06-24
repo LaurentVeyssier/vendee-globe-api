@@ -21,5 +21,5 @@ def get_min_datetime(db: t.Annotated[Session, Depends(session.get_db)]):
 
 
 @app.get("/race", response_model=t.List[RaceSample])
-def get_race(db: t.Annotated[Session, Depends(session.get_db)]):
-    return crud.get_partial_race(db=db, actual_time=datetime.now())
+def get_race(db: t.Annotated[Session, Depends(session.get_db)], actual_time: datetime):
+    return crud.get_partial_race(db=db, actual_time=actual_time)
