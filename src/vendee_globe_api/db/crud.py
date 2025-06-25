@@ -18,12 +18,7 @@ def get_max_datetime(db: Session) -> datetime:
 
 def get_partial_race(db: Session, actual_time: datetime) -> List[RaceBase]:
     # TODO: fill the blanks!
-    return (
-        db.query(RaceBase)
-        .filter(...)
-        .order_by(RaceBase.date_time)
-        .all()
-    )
+    return db.query(RaceBase).filter(...).order_by(RaceBase.date_time).all()
 
 
 def get_boats(db: Session) -> List[BoatBase]:
