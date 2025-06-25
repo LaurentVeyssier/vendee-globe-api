@@ -12,13 +12,15 @@ def get_min_datetime(db: Session) -> datetime:
 
 
 def get_max_datetime(db: Session) -> datetime:
-    return db.query(func.max(RaceBase.date_time)).scalar()
+    # TODO: based on the implementation of `get_min_datetime`, implement `get_max_datetime`
+    pass
 
 
 def get_partial_race(db: Session, actual_time: datetime) -> List[RaceBase]:
+    # TODO: fill the blanks!
     return (
         db.query(RaceBase)
-        .filter(RaceBase.date_time <= actual_time)
+        .filter(...)
         .order_by(RaceBase.date_time)
         .all()
     )
