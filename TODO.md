@@ -1,0 +1,1 @@
+- go to [crud.py](./src/vendee_globe_api/db/crud.py) and fill the blanks required to access the data
