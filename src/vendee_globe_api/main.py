@@ -1,12 +1,8 @@
-import typing as t
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from fastapi import Depends, FastAPI
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-from vendee_globe_api.config import settings
 from vendee_globe_api.db import crud, session
-from vendee_globe_api.models import Boat, RaceSample
 
 app = FastAPI()
 start_time = datetime.now()
@@ -16,17 +12,11 @@ with next(session.get_db()) as db:
 total_duration = (max_datetime - min_datetime).total_seconds() / 60
 
 
-@app.get("/boats", response_model=t.List[Boat])
-def get_boats(db: t.Annotated[Session, Depends(session.get_db)]):
-    return crud.get_boats(db=db)
+# TODO: define a /boats route that returns all boats static information
+...
 
-
-@app.get("/race", response_model=t.List[RaceSample])
-def get_race(db: t.Annotated[Session, Depends(session.get_db)]):
-    elapsed_time_ratio = (
-        (datetime.now() - start_time).total_seconds() / 60
-    ) / settings.timer
-    equivalent_time = min_datetime + timedelta(
-        minutes=total_duration * elapsed_time_ratio
-    )
-    return crud.get_partial_race(db=db, actual_time=equivalent_time)
+# TODO: define a /race route that return race data, up to the equivalent race elapsed time.
+# You should make a time conversion between our timer (defined from settings.timer, in minutes) and
+# the race time (defined with total_duration, in minutes), min_datetime and max_datetime
+# Display only the relevant data
+...

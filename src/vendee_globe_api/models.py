@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class Boat(BaseModel):
@@ -47,12 +47,7 @@ class RaceSample(BaseModel):
     distance_to_finish: float = Field(description="Distance to the finish line")
     distance_to_leader: float = Field(description="Distance to the race leader")
 
-    @field_validator("date_time", mode="before")
-    @classmethod
-    def parse_str_to_datetime(cls, value):
-        if isinstance(value, str):
-            try:
-                return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
-            except ValueError as e:
-                raise ValueError(f"Invalid datetime format: {value}") from e
-        return value
+    # TODO: define a field validator that validates field "date_time" with parameter `mode="before"`
+    # This field validator, named `parse_str_to_datetime`, transforms the date_time field (initially str)
+    # to a datetime field
+    ...

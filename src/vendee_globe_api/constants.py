@@ -11,4 +11,5 @@ wiki_2024_path = root_dir / "data" / "wiki_2024.parquet"
 df_race_path = root_dir / "data" / "df_race.parquet"
 df_infos_path = root_dir / "data" / "df_infos.parquet"
 
-DATABASE_URL = f"sqlite:///{root_dir}/data/vendee_globe.sqlite"
+# TODO: define database url, database is in data/vendee_globe.sqlite
+DATABASE_URL = ...
