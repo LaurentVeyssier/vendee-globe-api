@@ -15,12 +15,6 @@ with next(session.get_db()) as db:
     max_datetime = crud.get_max_datetime(db=db)
 total_duration = (max_datetime - min_datetime).total_seconds() / 60
 
-
-@app.get("/boats", response_model=t.List[Boat])
-def get_boats(db: t.Annotated[Session, Depends(session.get_db)]):
-    return crud.get_boats(db=db)
-
-
 @app.get("/race", response_model=t.List[RaceSample])
 def get_race(db: t.Annotated[Session, Depends(session.get_db)]):
     elapsed_time_ratio = (
@@ -29,4 +23,9 @@ def get_race(db: t.Annotated[Session, Depends(session.get_db)]):
     equivalent_time = min_datetime + timedelta(
         minutes=total_duration * elapsed_time_ratio
     )
-    return crud.get_partial_race(db=db, actual_time=equivalent_time)
+    # TODO: use your crud function defined earlier to query relevant race samples (previous to equivalent_time)
+    pass
+
+# TODO: define a simple /boats route, defined similarly to /race, that just uses crud.get_boats to get boats info
+def get_boats():
+    pass

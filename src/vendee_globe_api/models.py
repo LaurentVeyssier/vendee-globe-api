@@ -52,7 +52,8 @@ class RaceSample(BaseModel):
     def parse_str_to_datetime(cls, value):
         if isinstance(value, str):
             try:
-                return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+                # TODO: parse_datetime from str here
+                return ...
             except ValueError as e:
                 raise ValueError(f"Invalid datetime format: {value}") from e
         return value
